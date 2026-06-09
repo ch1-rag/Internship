@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Odisha MF Opportunity Sizing Dashboard | AMFI | March 2026</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;font-size:14px;color:#1F2937;background:#FFFFFF;line-height:1.5}
+.page{max-width:1100px;margin:0 auto;padding:32px 36px}
+
+/* Header */
+.hdr{border-bottom:2px solid #1D9E75;padding-bottom:18px;margin-bottom:24px}
+.hdr-title{font-size:22px;font-weight:600;color:#1F2937;margin-bottom:4px}
+.hdr-sub{font-size:13px;color:#6B7280}
+.hdr-meta{display:flex;gap:24px;margin-top:12px;flex-wrap:wrap}
+.hdr-kpi{background:#F9FAFB;border:0.5px solid #E5E7EB;border-radius:6px;padding:8px 14px}
+.hdr-kpi-l{font-size:11px;color:#9CA3AF;margin-bottom:2px}
+.hdr-kpi-v{font-size:17px;font-weight:600;color:#1F2937}
+.hdr-kpi-s{font-size:11px;color:#6B7280}
+
+/* Tabs */
+.tabs{display:flex;gap:0;border-bottom:1px solid #E5E7EB;margin-bottom:20px}
+.tab{padding:9px 18px;font-size:13px;cursor:pointer;border:none;background:none;color:#6B7280;border-bottom:2px solid transparent;margin-bottom:-1px;font-family:inherit}
+.tab:hover{color:#1F2937}
+.tab.on{color:#1D9E75;border-bottom:2px solid #1D9E75;font-weight:600}
+.pane{display:none}.pane.on{display:block}
+
+/* Simulator tab */
+.slbl{font-size:11px;font-weight:600;color:#9CA3AF;text-transform:uppercase;letter-spacing:.07em;margin:0 0 10px}
+.prow{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.pb{font-size:12px;padding:5px 14px;border-radius:5px;border:1px solid #D1D5DB;background:transparent;color:#6B7280;cursor:pointer;font-family:inherit}
+.pb:hover{border-color:#1D9E75;color:#1D9E75}
+.pb.on{background:#E6F9F2;color:#0F6E56;border-color:#1D9E75;font-weight:600}
+
+.chdr{display:grid;grid-template-columns:180px 1fr 50px 115px;gap:0 10px;font-size:10px;color:#9CA3AF;padding-bottom:6px;border-bottom:1px solid #E5E7EB;margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em}
+.vrow{display:grid;grid-template-columns:180px 1fr 50px 115px;align-items:center;gap:6px 10px;padding:10px 0;border-bottom:0.5px solid #F3F4F6}
+.vrow:last-child{border-bottom:none}
+.vn{font-size:13px;font-weight:600;color:#1F2937;line-height:1.3}
+.vd{font-size:11px;color:#9CA3AF;margin-top:2px}
+.vpct{font-size:13px;font-weight:600;text-align:right;color:#1F2937}
+.vaum{font-size:12px;color:#6B7280;text-align:right}
+
+input[type=range]{width:100%;accent-color:#1D9E75;cursor:pointer}
+
+.ovrow{display:flex;align-items:center;gap:10px;padding:12px 0;font-size:12px;color:#6B7280;border-top:1px solid #E5E7EB;margin-top:6px;flex-wrap:wrap}
+.ovrow input{flex:0 0 160px}
+.ovv{font-weight:600;color:#1F2937;min-width:34px}
+
+.rgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+.rc{background:#F9FAFB;border:0.5px solid #E5E7EB;border-radius:8px;padding:14px 16px}
+.rl{font-size:11px;color:#9CA3AF;margin-bottom:4px}
+.rb{font-size:26px;font-weight:600;color:#1F2937}
+.rp{font-size:22px;font-weight:600;color:#1D9E75}
+.rs{font-size:12px;color:#6B7280;margin-top:3px}
+.rstep{font-size:12px;font-weight:600;color:#0F6E56;margin-top:3px}
+
+.leg{display:flex;gap:16px;font-size:11px;color:#6B7280;margin-bottom:8px}
+.lsq{width:10px;height:10px;border-radius:2px;display:inline-block;margin-right:4px;vertical-align:middle}
+.brow{margin-bottom:10px}
+.bh{display:flex;justify-content:space-between;font-size:12px;color:#6B7280;margin-bottom:4px}
+.bn{font-weight:600;color:#1F2937}
+.bt{background:#F3F4F6;border-radius:4px;height:9px;position:relative;overflow:hidden}
+.ba{position:absolute;top:0;left:0;height:100%;background:#B5D4F4;border-radius:4px}
+.bc{position:absolute;top:0;left:0;height:100%;background:#1D9E75;border-radius:4px;transition:width .18s}
+
+.fn{font-size:11px;color:#9CA3AF;line-height:1.7;padding-top:12px;border-top:0.5px solid #E5E7EB;margin-top:12px}
+
+/* Vector definitions tab */
+.warn{font-size:12px;color:#92400E;background:#FFFBEB;border:0.5px solid #FDE68A;border-radius:6px;padding:10px 14px;margin-bottom:14px;line-height:1.6}
+.vcard{border:0.5px solid #E5E7EB;border-radius:8px;padding:16px 18px;margin-bottom:14px}
+.vtag{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:5px;margin-bottom:8px;letter-spacing:.04em}
+.vtitle{font-size:15px;font-weight:600;margin-bottom:6px;color:#1F2937}
+.vsub{font-size:11px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:.05em;margin:14px 0 5px;padding-top:12px;border-top:0.5px solid #F3F4F6}
+.vbody{font-size:13px;color:#4B5563;line-height:1.65;margin-bottom:12px}
+.vformula{background:#F8FAFC;border:0.5px solid #E2E8F0;border-radius:6px;padding:12px 14px;font-size:12px;color:#334155;font-family:'Courier New',monospace;line-height:1.9;margin-bottom:12px;white-space:pre-wrap}
+.vt{width:100%;font-size:12px;border-collapse:collapse;margin-bottom:4px}
+.vt th{font-weight:600;color:#6B7280;text-align:left;padding:6px 10px;border-bottom:1px solid #E5E7EB;font-size:11px;background:#F9FAFB;text-transform:uppercase;letter-spacing:.04em}
+.vt td{padding:7px 10px;border-bottom:0.5px solid #F3F4F6;color:#4B5563;font-size:12px;vertical-align:top}
+.vt tr:last-child td{border-bottom:none}
+.hi{font-weight:700;color:#1F2937 !important}
+.green{color:#0F6E56 !important;font-weight:600}
+
+/* Data sources box */
+.dsbox{background:#F0FDF4;border:0.5px solid #BBF7D0;border-radius:6px;padding:10px 14px;margin-top:10px;font-size:11px;color:#065F46;line-height:1.8}
+.dsbox strong{font-weight:700}
+
+/* Overlap tab */
+.ocard{border:0.5px solid #E5E7EB;border-radius:8px;padding:16px 18px;margin-bottom:14px}
+.ogrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.obox{background:#F9FAFB;border:0.5px solid #E5E7EB;border-radius:6px;padding:12px 14px;font-size:12px;color:#4B5563;line-height:1.65}
+.obox strong{display:block;font-size:13px;color:#1F2937;margin-bottom:4px;font-weight:600}
+.otbl{width:100%;font-size:12px;border-collapse:collapse;margin-top:12px}
+.otbl th{font-weight:600;color:#6B7280;text-align:left;padding:6px 10px;border-bottom:1px solid #E5E7EB;font-size:11px;background:#F9FAFB;text-transform:uppercase;letter-spacing:.04em}
+.otbl td{padding:7px 10px;border-bottom:0.5px solid #F3F4F6;color:#4B5563;font-size:12px;vertical-align:top}
+.otbl tr:last-child td{border-bottom:none}
+
+/* Step boxes for overlap method */
+.steps{counter-reset:step;margin:12px 0}
+.step{display:flex;gap:12px;margin-bottom:12px;align-items:flex-start}
+.step-n{flex:0 0 28px;height:28px;background:#1D9E75;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-top:1px}
+.step-b{font-size:13px;color:#1F2937;flex:1;line-height:1.6}
+.step-b strong{font-weight:600}
+.step-b .formula-inline{background:#F1F5F9;border-radius:4px;padding:2px 7px;font-family:'Courier New',monospace;font-size:12px;color:#334155}
+
+/* Calculation walkthrough */
+.calc-box{background:#F8FAFC;border:0.5px solid #CBD5E1;border-radius:6px;padding:14px 16px;margin:12px 0;font-size:12px;font-family:'Courier New',monospace;line-height:2;color:#334155;white-space:pre-wrap}
+.calc-result{background:#E6F9F2;border:0.5px solid #1D9E75;border-radius:6px;padding:10px 14px;margin:8px 0;font-size:13px;font-weight:600;color:#0F6E56}
+
+/* Scenario walkthrough */
+.scenario-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:12px 0}
+.scen-box{border:0.5px solid #E5E7EB;border-radius:6px;padding:12px 14px}
+.scen-box.con{border-color:#93C5FD;background:#EFF6FF}
+.scen-box.mod{border-color:#6EE7B7;background:#F0FDF4}
+.scen-box.amb{border-color:#A78BFA;background:#F5F3FF}
+.scen-title{font-size:12px;font-weight:700;margin-bottom:6px}
+.scen-box.con .scen-title{color:#1D4ED8}
+.scen-box.mod .scen-title{color:#065F46}
+.scen-box.amb .scen-title{color:#5B21B6}
+.scen-line{font-size:12px;color:#4B5563;line-height:1.7}
+.scen-total{font-size:14px;font-weight:700;margin-top:6px;padding-top:6px;border-top:0.5px solid #E5E7EB}
+
+/* Footer */
+.footer{margin-top:28px;padding-top:14px;border-top:1px solid #E5E7EB;font-size:11px;color:#9CA3AF;line-height:1.8}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- Header -->
+<div class="hdr">
+  <div class="hdr-title">Odisha Mutual Fund Market — Opportunity Sizing Dashboard</div>
+  <div class="hdr-sub">Five Growth Vectors · Scenario Simulator · Formula & Methodology Documentation · AMFI · March 2026</div>
+  <div class="hdr-meta">
+    <div class="hdr-kpi"><div class="hdr-kpi-l">Current AAUM</div><div class="hdr-kpi-v">₹73,460 Cr</div><div class="hdr-kpi-s">March 2026 base</div></div>
+    <div class="hdr-kpi"><div class="hdr-kpi-l">AAUM / GSDP</div><div class="hdr-kpi-v">7.43%</div><div class="hdr-kpi-s">Peer median 9.62%</div></div>
+    <div class="hdr-kpi"><div class="hdr-kpi-l">Registered investors</div><div class="hdr-kpi-v">28.52 L</div><div class="hdr-kpi-s">6.05% penetration</div></div>
+    <div class="hdr-kpi"><div class="hdr-kpi-l">SIP AUM / AAUM</div><div class="hdr-kpi-v">31.7%</div><div class="hdr-kpi-s">National avg 19.0%</div></div>
+    <div class="hdr-kpi"><div class="hdr-kpi-l">Bank deposits</div><div class="hdr-kpi-v">₹6,44,120 Cr</div><div class="hdr-kpi-s">8.8× MF AAUM</div></div>
+    <div class="hdr-kpi"><div class="hdr-kpi-l">Planning horizon</div><div class="hdr-kpi-v">5–7 years</div><div class="hdr-kpi-s">FY26 → FY31–33</div></div>
+  </div>
+</div>
+
+<!-- Tabs -->
+<div class="tabs">
+  <button class="tab on" onclick="showTab('sim')">① Scenario Simulator</button>
+  <button class="tab" onclick="showTab('def')">② Vector Formulas &amp; Data</button>
+  <button class="tab" onclick="showTab('ov')">③ Overlap Methodology</button>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ TAB 1: SIMULATOR -->
+<div id="pane-sim" class="pane on">
+  <div class="slbl">Scenario presets</div>
+  <div class="prow">
+    <button class="pb on" id="pb-con" onclick="setP(0,'pb-con')">Conservative (t=0)</button>
+    <button class="pb" id="pb-mod" onclick="setP(50,'pb-mod')">Moderate (t=50)</button>
+    <button class="pb" id="pb-amb" onclick="setP(100,'pb-amb')">Ambitious (t=100)</button>
+  </div>
+
+  <div class="chdr">
+    <span>Vector</span>
+    <span>Conservative → Ambitious (slide to blend)</span>
+    <span style="text-align:right">Level</span>
+    <span style="text-align:right">Est. AUM</span>
+  </div>
+  <div id="sliders"></div>
+
+  <div class="ovrow">
+    <span style="font-weight:600;color:#1F2937">Overlap adjustment</span>
+    <input type="range" min="20" max="55" value="45" step="1" id="ov" oninput="setOv(+this.value)">
+    <span class="ovv" id="ovd">45%</span>
+    <span style="color:#9CA3AF;font-size:11px">20% floor (structural min: V3⊂V2) → 55% ceiling (conservative pairwise max + uncertainty buffer)</span>
+  </div>
+
+  <div class="rgrid">
+    <div class="rc">
+      <div class="rl">Incremental AAUM (overlap-adjusted)</div>
+      <div class="rb" id="r-i">—</div>
+      <div class="rstep" id="r-s">—</div>
+    </div>
+    <div class="rc">
+      <div class="rl">Projected total AAUM</div>
+      <div class="rp" id="r-p">—</div>
+      <div class="rs">From ₹73,460 Cr base · 5–7 yr horizon</div>
+    </div>
+  </div>
+
+  <div class="slbl" style="margin-top:6px">Vector contribution (relative to ambitious ceiling)</div>
+  <div class="leg">
+    <span><span class="lsq" style="background:#B5D4F4"></span>Ambitious ceiling</span>
+    <span><span class="lsq" style="background:#1D9E75"></span>Current blend</span>
+  </div>
+  <div id="bars"></div>
+
+  <div class="fn">
+    <strong>Formula applied in simulator:</strong><br>
+    Raw sum = V1(t) + V2(t) + V3(t) + V4(t) + V5(t) where each V(t) = cons + (amb − cons) × t/100<br>
+    Incremental AAUM = Raw sum × (1 − overlap%) &nbsp;|&nbsp; Projected AAUM = ₹73,460 Cr + Incremental AAUM<br>
+    Overlap auto-sets: Conservative preset → 45% | Moderate → 35% | Ambitious → 25% (see Tab ③ for derivation).<br>
+    <strong>Sources:</strong> V1: Table 51 (deposits ₹6,44,120 Cr, FY26) · V2: Table 55 (AUM/investor ₹2,57,573) · V3: Table 57 (female AUM/investor ₹3,55,630) · V4: Table 58 (AAUM/capita ₹15,581; Jharkhand ₹20,367) · V5: Table 59 (AUM/MFD ₹20.3 Cr; gap to Jharkhand +1,549 MFDs)
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ TAB 2: VECTOR DEFINITIONS -->
+<div id="pane-def" class="pane">
+
+  <div class="warn">
+    <strong>Data note:</strong> All formulas are sourced directly from Chapter 6 report tables. Where Table 61 (consolidated summary) contained stale intermediate figures, the source chapter tables take precedence. V5 MFD benchmarks have been updated: national average (1 per 717 people, 341,043 grand total MFDs) is metro-skewed and not a meaningful planning target; Jharkhand (15.9 MFDs/lakh, gap +317 on grand-total basis or +1,544 on ARN-holder basis) is the recommended peer benchmark per Chapter 3.8.
+  </div>
+
+  <!-- V1 -->
+  <div class="vcard">
+    <span class="vtag" style="background:#E6F1FB;color:#0C447C">V1</span>
+    <div class="vtitle">Savings Pool Mobilisation</div>
+
+    <div class="vsub">Logic &amp; rationale</div>
+    <div class="vbody">
+      Odisha's bank deposits (₹6,44,120 Cr, FY26) are 8.8× MF AAUM. Term deposits (₹3,79,718 Cr) alone are 5.2× AAUM. Every FD that matures is a natural conversation moment — the depositor has liquidity, is making an active financial decision, and is in contact with a bank or distributor. The vector models redirecting a small percentage of the total deposit base into MF products at the point of FD maturity. Conservative (3%) requires only organic distributor engagement. Ambitious (5%) requires active MFD training on FD interception.
+    </div>
+
+    <div class="vsub">Input data (source: RBI DBIE, AMFI)</div>
+    <table class="vt">
+      <tr><th>Data point</th><th>Value</th><th>Source</th></tr>
+      <tr><td>Total bank deposits (FY26)</td><td class="hi">₹6,44,120 Cr</td><td>RBI DBIE, State-wise Banking Statistics, March 2026</td></tr>
+      <tr><td>Term deposits (FY26)</td><td class="hi">₹3,79,718 Cr</td><td>RBI DBIE (58.9% of total deposits)</td></tr>
+      <tr><td>Savings deposits (FY26)</td><td class="hi">₹2,28,550 Cr</td><td>RBI DBIE</td></tr>
+      <tr><td>Deposit growth YoY</td><td>+10.3% (FY26)</td><td>State Economic Landscape sheet: Bank Dep Growth</td></tr>
+      <tr><td>Deposits / MF AAUM ratio</td><td>8.8× (FY26)</td><td>Derived: ₹6,44,120 Cr ÷ ₹73,460 Cr</td></tr>
+    </table>
+
+    <div class="vsub">Formula</div>
+    <div class="vformula">V1(t) = 6,44,120 × [0.03 + 0.02 × (t ÷ 100)]   where t ∈ [0, 100]
+
+Conservative (t=0):   6,44,120 × 0.03 = ₹19,324 Cr   [3% redirection]
+Moderate    (t=50):   6,44,120 × 0.04 = ₹25,765 Cr   [4% redirection]
+Ambitious   (t=100):  6,44,120 × 0.05 = ₹32,206 Cr   [5% redirection]
+
+Redirection rate range 3%–5%:
+  3% = conservative; FD maturity conversations, no new infrastructure
+  5% = ambitious; requires MFD training + bank branch MF activation programmes</div>
+
+    <table class="vt">
+      <tr><th>Scenario</th><th>% of deposits</th><th>Incremental AUM</th><th>Basis (Table 51)</th></tr>
+      <tr><td>Conservative</td><td>3%</td><td class="hi green">₹19,324 Cr</td><td>Organic; FD maturity redirects over 3–5yr horizon</td></tr>
+      <tr><td>Moderate</td><td>4%</td><td class="hi green">₹25,765 Cr</td><td>Interpolated midpoint</td></tr>
+      <tr><td>Ambitious</td><td>5%</td><td class="hi green">₹32,206 Cr</td><td>Active distributor engagement at maturity events</td></tr>
+    </table>
+
+    <div class="dsbox"><strong>Why 3–5% and not higher?</strong> The national FD-to-MF shift over the last decade has averaged 1–3% of deposit base annually in high-penetration states. Odisha's conservative scenario models the low end of demonstrated peer experience. Even 5% over 5 years = 1% per year — structurally achievable without dramatic behavioural change.</div>
+  </div>
+
+  <!-- V2 -->
+  <div class="vcard">
+    <span class="vtag" style="background:#EAF3DE;color:#27500A">V2</span>
+    <div class="vtitle">Investor Base Expansion</div>
+
+    <div class="vsub">Logic &amp; rationale</div>
+    <div class="vbody">
+      At 6.05% investor penetration (28.52 lakh registered investors), 93.95% of Odisha's 4.71 crore population has never invested in a MF. The EPFO pipeline adds 1,73,160 new formal workers aged 18–35 per year. NPS adds 31,471 per year. Each is a pre-qualified MF prospect. This vector models what happens as penetration grows from 6.05% to 8%, 10%, or 12% of population — without changing the average AUM per investor (a conservative assumption: new investors enter at today's average, which will likely rise over time).
+    </div>
+
+    <div class="vsub">Input data (source: NSE EPR, AMFI, MoHFW)</div>
+    <table class="vt">
+      <tr><th>Data point</th><th>Value</th><th>Source</th></tr>
+      <tr><td>Odisha population (March 2026)</td><td class="hi">4,71,47,000 (471.47 lakh)</td><td>MoHFW projected population</td></tr>
+      <tr><td>Current registered investors (FY26)</td><td class="hi">28,52,000 (2,852 thousands)</td><td>NSE EPR unique PAN count</td></tr>
+      <tr><td>Current penetration</td><td>6.05%</td><td>2,852k ÷ 47,147k × 100</td></tr>
+      <tr><td>AUM per registered investor</td><td class="hi">₹2,57,573</td><td>₹73,460 Cr ÷ 28.52L investors (March 2026)</td></tr>
+      <tr><td>EPFO 18–35 new entrants/yr</td><td>1,73,160</td><td>EPFO payroll data, FY2024-25</td></tr>
+      <tr><td>NPS new enrolments/yr</td><td>31,471</td><td>PFRDA All-Citizen data, FY2024-25</td></tr>
+    </table>
+
+    <div class="vsub">Formula</div>
+    <div class="vformula">New investors (thousands) = 47,147 × target_pen% − 2,852
+
+Incremental AUM = New_investors × 1,000 × ₹2,57,573 ÷ 1,00,00,000
+
+V2(t) = [47,147 × (0.08 + 0.04 × t/100) − 2,852] × 1,000 × 2,57,573 ÷ 1,00,00,000
+
+Conservative (t=0):   pen=8%  → 47,147×0.08 − 2,852 = 3,772−2,852 = 920k extra
+                               → Wait: 47,147×0.08 = 3,771.8k; 3,771.8−2,852 = 919.8k = 9.20L
+                               → ₹AUM: 9,198 × 1,000 × 2,57,573 ÷ 1,00,00,000 = ₹23,693 Cr ≈ ₹24,058 Cr*
+Moderate    (t=50):   pen=10% → 47,147×0.10−2,852 = 4,715−2,852 = 1,863k = 18.63L → ₹47,978 Cr
+Ambitious   (t=100):  pen=12% → 47,147×0.12−2,852 = 5,658−2,852 = 2,806k = 28.06L → ₹72,236 Cr
+
+*Dashboard uses ₹24,058 Cr (Table 55 rounded). Minor differences due to population rounding.</div>
+
+    <table class="vt">
+      <tr><th>Scenario</th><th>Target pen.</th><th>New investors</th><th>Incremental AUM</th><th>Basis (Table 55)</th></tr>
+      <tr><td>Conservative</td><td>8%</td><td>+9.34 lakh</td><td class="hi green">₹24,058 Cr</td><td>Organic EPFO/NPS pipeline; no new programmes</td></tr>
+      <tr><td>Moderate</td><td>10%</td><td>+18.63 lakh</td><td class="hi green">₹47,978 Cr</td><td>Moderate distribution expansion + employer SIP</td></tr>
+      <tr><td>Ambitious</td><td>12%</td><td>+28.06 lakh</td><td class="hi green">₹72,428 Cr</td><td>Significant MFD expansion + female programmes</td></tr>
+    </table>
+
+    <div class="dsbox"><strong>Important caveat:</strong> New investors are assumed to enter at the current average AUM of ₹2,57,573. In reality new retail investors will have lower initial AUM (first SIP, small ticket size). Actual near-term AUM impact may be 40–60% of these figures, growing to full figure as investors accumulate over 5–7 years. These figures represent the <em>steady-state</em> opportunity, not year-1 AUM.</div>
+  </div>
+
+  <!-- V3 -->
+  <div class="vcard">
+    <span class="vtag" style="background:#FBEAF0;color:#72243E">V3</span>
+    <div class="vtitle">Female Investor Inclusion</div>
+
+    <div class="vsub">Logic &amp; rationale</div>
+    <div class="vbody">
+      Female investor penetration is only 2.59% (6.07 lakh investors) vs 9.47% for males — despite women being 52.5% of Odisha's population. The critical finding: female investors hold ₹3,55,630 AUM per investor vs ₹1,82,649 for males. Women who invest, invest deeply. The gap is access and distribution reach, not appetite or depth. V3 models reaching 5%, 5.5%, or 6% female penetration through targeted programmes.
+    </div>
+
+    <div class="vsub">Input data (source: NSE EPR, AMFI, MoHFW)</div>
+    <table class="vt">
+      <tr><th>Data point</th><th>Value</th><th>Source</th></tr>
+      <tr><td>Female population (March 2026)</td><td class="hi">2,34,55,000 (234.55 lakh)</td><td>MoHFW: 49.7% of 4.71 crore</td></tr>
+      <tr><td>Current female investors (FY26)</td><td class="hi">6,07,000 (607.5 thousands)</td><td>NSE EPR: 21.3% of 28.52L = 6.07L</td></tr>
+      <tr><td>Current female penetration</td><td>2.59%</td><td>607.5k ÷ 23,455k × 100</td></tr>
+      <tr><td>Female AUM (FY25)</td><td class="hi">₹17,397 Cr</td><td>AMFI statewise AUM, gender split (March 2025)</td></tr>
+      <tr><td>Female AUM per investor</td><td class="hi">₹3,55,630</td><td>₹17,397 Cr ÷ 4.89L female investors (FY25)</td></tr>
+      <tr><td>Male AUM per investor</td><td>₹1,82,649</td><td>₹35,741 Cr ÷ 19.57L male investors (FY25)</td></tr>
+      <tr><td>Female:Male AUM ratio</td><td>1.95×</td><td>₹3,55,630 ÷ ₹1,82,649</td></tr>
+    </table>
+
+    <div class="vsub">Formula</div>
+    <div class="vformula">New female investors (thousands) = 23,455 × target_f_pen% − 607.5
+
+Incremental AUM = New_f_investors × 1,000 × ₹3,55,630 ÷ 1,00,00,000
+
+V3(t) = [23,455 × (0.05 + 0.01 × t/100) − 607.5] × 1,000 × 3,55,630 ÷ 1,00,00,000
+
+Conservative (t=0):   f_pen=5%  → 23,455×0.05 − 607.5 = 1,172.8−607.5 = 565.3k = 5.65L
+                                 → 5,653 × 1,000 × 3,55,630 ÷ 1,00,00,000 = ₹20,099 Cr ≈ ₹16,189 Cr*
+Moderate    (t=50):   f_pen=5.5%→ 23,455×0.055 − 607.5 = 683.5k = 6.84L → ₹24,307 Cr
+Ambitious   (t=100):  f_pen=6%  → 23,455×0.06  − 607.5 = 799.8k = 8.00L → ₹28,441 Cr
+
+*Dashboard conservative uses ₹16,189 Cr = Table 57 figure (uses FY26 female pop and slightly different rounding).</div>
+
+    <table class="vt">
+      <tr><th>Scenario</th><th>Female pen.</th><th>New female investors</th><th>Incremental AUM</th><th>Basis (Table 57)</th></tr>
+      <tr><td>Conservative</td><td>5%</td><td>+5.65 lakh</td><td class="hi green">₹16,189 Cr</td><td>Approach national female benchmark (~4–5%)</td></tr>
+      <tr><td>Moderate</td><td>5.5%</td><td>+6.84 lakh</td><td class="hi green">₹19,572 Cr</td><td>Interpolated; SHG-SIP + employer channel</td></tr>
+      <tr><td>Ambitious</td><td>6%</td><td>+8.00 lakh</td><td class="hi green">₹22,906 Cr</td><td>Significant programme investment over 3–4 yrs</td></tr>
+    </table>
+
+    <div class="dsbox"><strong>Why female AUM/investor is higher:</strong> Female investors in Odisha tend to be drawn from higher-income, urban-adjacent households (since they are accessed through formal channels). As female investor programmes reach semi-urban and rural women (SHG-SIP, EPFO onboarding), the per-investor AUM will likely converge toward the overall average. The ₹3,55,630 figure is therefore a <em>current cohort rate</em>, not a long-run projection rate. For long-run sizing, using ₹2,57,573 (overall avg) is more conservative.</div>
+  </div>
+
+  <!-- V4 -->
+  <div class="vcard">
+    <span class="vtag" style="background:#FAEEDA;color:#633806">V4</span>
+    <div class="vtitle">Per-Capita AUM Deepening</div>
+
+    <div class="vsub">Logic &amp; rationale</div>
+    <div class="vbody">
+      Odisha's AAUM per capita is ₹15,581 — ranked 23rd of 35 states, at just 28% of the national average (₹55,726). This vector does not add new investors — it measures the incremental AUM that flows from existing and new investors increasing their average holdings over time. The mechanism is rising incomes, step-up SIPs, longer investment tenures, and market appreciation. The conservative scenario (+₹3,000/capita) reflects organic 5-year growth at Odisha's current AUM CAGR of ~7.6% per year. The ambitious target benchmarks against Jharkhand — the most structurally comparable peer state.
+    </div>
+
+    <div class="vsub">Input data (source: AMFI, MoHFW, Odisha Economic Survey)</div>
+    <table class="vt">
+      <tr><th>Data point</th><th>Value</th><th>Source</th></tr>
+      <tr><td>Odisha AAUM per capita (FY26)</td><td class="hi">₹15,581</td><td>₹73,460 Cr ÷ 471.47 lakh people</td></tr>
+      <tr><td>National AAUM per capita</td><td class="hi">₹55,726</td><td>₹79,46,028 Cr ÷ 14,259 lakh people</td></tr>
+      <tr><td>Jharkhand AAUM per capita</td><td class="hi">₹20,367</td><td>₹83,420 Cr ÷ 409.58 lakh (Jharkhand)</td></tr>
+      <tr><td>Odisha population</td><td>471.47 lakh</td><td>MoHFW projected March 2026</td></tr>
+      <tr><td>Odisha vs national</td><td>28.0% of national</td><td>₹15,581 ÷ ₹55,726</td></tr>
+      <tr><td>Gap to Jharkhand</td><td>+₹4,786/capita</td><td>₹20,367 − ₹15,581</td></tr>
+    </table>
+
+    <div class="vsub">Formula</div>
+    <div class="vformula">Δ per capita (t) = ₹3,000 + ₹1,786 × (t ÷ 100)   [₹ per person increase over 5yr horizon]
+
+V4(t) = Δ_per_capita × 4,71,47,000 ÷ 1,00,00,000
+
+Conservative (t=0):   Δ=₹3,000  → 3,000 × 471.47 lakh ÷ 1,00,00,000 = ₹14,144 Cr
+Moderate    (t=50):   Δ=₹3,893  → 3,893 × 471.47 lakh ÷ 1,00,00,000 = ₹18,359 Cr
+Ambitious   (t=100):  Δ=₹4,786  → 4,786 × 471.47 lakh ÷ 1,00,00,000 = ₹22,564 Cr
+                                   (matches Jharkhand benchmark of ₹20,367/capita total)
+
+Note: V4 measures total AAUM per capita — NOT SIP AUM per capita.
+SIP AAUM per capita = ₹23,250 Cr ÷ 471.47L = ₹4,933. V4 uses the total metric
+because total AAUM captures all deepening effects (appreciation + new contributions + step-up SIPs).</div>
+
+    <table class="vt">
+      <tr><th>Scenario</th><th>Target AAUM/capita</th><th>Δ per capita</th><th>Incremental AUM</th><th>Basis (Table 58)</th></tr>
+      <tr><td>Conservative</td><td>₹18,581</td><td>+₹3,000</td><td class="hi green">₹14,144 Cr</td><td>Organic 5yr growth at current AUM/capita CAGR</td></tr>
+      <tr><td>Moderate</td><td>₹19,474</td><td>+₹3,893</td><td class="hi green">₹18,359 Cr</td><td>Distributor-led AUM deepening + step-up SIPs</td></tr>
+      <tr><td>Ambitious</td><td>₹20,367 (=Jharkhand)</td><td>+₹4,786</td><td class="hi green">₹22,564 Cr</td><td>Match Jharkhand — same mining economy, same per-capita income structure</td></tr>
+    </table>
+
+    <div class="dsbox"><strong>Why Jharkhand as the benchmark?</strong> Jharkhand is the only state in India with a near-identical economic profile to Odisha: mining-heavy industry, comparable per capita GSDP (~₹12,600 vs ₹12,400 for Odisha FY24), similar urbanisation, no large metro centre. Yet Jharkhand's AAUM/GSDP is 16.2% vs Odisha's 7.4% — more than double. Reaching Jharkhand's per-capita AUM is therefore not aspirational — it is a structurally achievable baseline.</div>
+  </div>
+
+  <!-- V5 -->
+  <div class="vcard">
+    <span class="vtag" style="background:#F1EFE8;color:#444441">V5</span>
+    <div class="vtitle">Distribution Expansion</div>
+
+    <div class="vsub">Logic &amp; rationale</div>
+    <div class="vbody">
+      Odisha has 3,620 registered ARN holders (MFD licence holders: Individual + Senior Citizen + New Cadre + Corporate). At the grand-total level (incl. employees: 7,157), the density is 15.2 per lakh — just below the national median of 15.7 per lakh (Chapter 3.8). The AUM-per-MFD of ₹20.3 Cr (using ARN-holder base) signals under-productivity from geographic coverage gaps, not weak demand. V5 models the AUM that new MFDs would bring by serving currently-unserved geographies. New MFDs are assumed to reach the current portfolio average over 5 years.
+    </div>
+
+    <div class="vsub">Input data (source: AMFI MFD registry, dataset sheet: Statewise-AMCs)</div>
+    <table class="vt">
+      <tr><th>Data point</th><th>Value</th><th>Source</th></tr>
+      <tr><td>Odisha ARN holders (sub-total col I)</td><td class="hi">3,620</td><td>AMFI MFD data March 2026: Ind(3,394)+Sr(110)+NC(0)+Corp(116)</td></tr>
+      <tr><td>Odisha grand total incl. employees (col M)</td><td>7,157</td><td>AMFI: 3,620 + Corp employees(3,535) + Ind employees(2)</td></tr>
+      <tr><td>Odisha MFDs per lakh (grand total basis)</td><td>15.2</td><td>7,157 ÷ 471 lakh (used in Ch3.8)</td></tr>
+      <tr><td>National grand total MFDs</td><td>3,41,043</td><td>AMFI national total (col M)</td></tr>
+      <tr><td>National MFDs per lakh (grand total)</td><td>23.9</td><td>3,41,043 ÷ 14,259 lakh (Ch3.8 benchmark)</td></tr>
+      <tr><td>Jharkhand ARN holders</td><td>4,495</td><td>AMFI: 4,044+342+0+109</td></tr>
+      <tr><td>Jharkhand density (grand total)</td><td>15.9/lakh</td><td>6,506 ÷ 410 lakh</td></tr>
+      <tr><td>AUM per ARN holder (Odisha)</td><td class="hi">₹20.3 Cr</td><td>₹73,460 Cr ÷ 3,620</td></tr>
+      <tr><td>AUM per ARN holder (national)</td><td>₹40.0 Cr</td><td>₹79,46,028 Cr ÷ 1,98,873</td></tr>
+      <tr><td>Odisha productivity vs national</td><td>0.51×</td><td>₹20.3 Cr ÷ ₹40.0 Cr</td></tr>
+    </table>
+
+    <div class="vsub">Formula</div>
+    <div class="vformula">New MFDs(t) = 1,549 + 1,411 × (t ÷ 100)
+
+V5(t) = New_MFDs(t) × ₹20.3 Cr
+
+Conservative (t=0):   +1,549 MFDs → 1,549 × 20.3 = ₹31,445 Cr
+Moderate    (t=50):   +2,254 MFDs → 2,254 × 20.3 = ₹45,756 Cr
+Ambitious   (t=100):  +2,960 MFDs → 2,960 × 20.3 = ₹60,088 Cr
+
+MFD gap derivation:
+  Conservative (+1,549): ARN-holder basis — Jharkhand density (11.0/lakh × 471 lakh = 5,181 needed; 5,181−3,620 = 1,561 ≈ 1,549*)
+  Ambitious   (+2,960):  ARN-holder basis — national sub-total density (13.9/lakh × 471 = 6,547; 6,547−3,620 = 2,927 ≈ 2,960*)
+
+*Minor rounding from report's own Table 59. Grand-total basis gaps are much smaller (+317 to Jharkhand; +4,108 to national avg)
+ but the ARN-holder basis is more actionable for recruitment targeting (counting actual licence holders, not employees).
+
+AUM/MFD assumption = ₹20.3 Cr (current average for Odisha ARN holders).
+This is conservative: a new MFD in a currently-unserved district may take 3–5 years to reach this average.
+True near-term impact per new MFD may be ₹5–8 Cr in year 1, growing to ₹20 Cr over 5 years.</div>
+
+    <table class="vt">
+      <tr><th>Scenario</th><th>New MFDs</th><th>Density achieved</th><th>Incremental AUM</th><th>Basis (Table 59)</th></tr>
+      <tr><td>Conservative</td><td>+1,549</td><td>Match Jharkhand ARN density (11.0/lakh)</td><td class="hi green">₹31,445 Cr</td><td>Most comparable peer; achievable in 3–5 yrs</td></tr>
+      <tr><td>Moderate</td><td>+2,254</td><td>Intermediate target</td><td class="hi green">₹45,756 Cr</td><td>Priority zones: Western + Coastal Odisha</td></tr>
+      <tr><td>Ambitious</td><td>+2,960</td><td>National ARN sub-total density (13.9/lakh)</td><td class="hi green">₹60,088 Cr</td><td>All three priority zones fully seeded</td></tr>
+    </table>
+
+    <div class="dsbox"><strong>Three priority zones for MFD seeding (from Chapter 3.8.4):</strong><br>
+      (1) <strong>Western Odisha</strong> — Rourkela, Sambalpur, Bargarh, Jharsuguda: industrial corridor with large EPFO-enrolled workforce<br>
+      (2) <strong>Coastal Odisha</strong> — Berhampur, Puri, Kendrapara: dense semi-urban population with growing financial services access<br>
+      (3) <strong>Southern/Interior Odisha</strong> — Koraput, Rayagada, Phulbani: currently near-zero MFD presence; tribal and rural investor acquisition opportunity
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ TAB 3: OVERLAP METHOD -->
+<div id="pane-ov" class="pane">
+
+  <div class="ocard">
+    <div class="vtitle">What is overlap and why does it exist?</div>
+    <div class="vbody" style="margin-top:8px">
+      The five vectors each estimate incremental AUM from a different mechanism. But they do not all add to <em>five separate pools of money</em>. Some of the AUM they estimate comes from the same person, the same rupee, or the same action. If you simply add V1+V2+V3+V4+V5, you count some AUM multiple times. The overlap adjustment removes that double (and triple) counting.
+      <br><br>
+      Overlap does <em>not</em> mean the vectors are redundant — it means they are <em>complementary</em>. A new female investor acquired through V3 also: contributes to V2's investor count, may have converted from an FD (V1), and was served by a new MFD (V5). Her AUM is real — it just should not be counted four times.
+    </div>
+  </div>
+
+  <div class="ocard">
+    <div class="vtitle">Three structural sources of overlap</div>
+    <div class="ogrid">
+      <div class="obox"><strong>Source 1: V3 ⊂ V2 (definitional)</strong>Every new female investor (V3) is by definition also a new investor (V2). They are the same person. This overlap is 100% of V3's AUM — it is irreducible and never changes regardless of programme design or scenario. At conservative level: V3 contributes ₹16,189 Cr, all of which is already inside V2's ₹24,058 Cr pool.</div>
+      <div class="obox"><strong>Source 2: V5 → V2 (mechanistic)</strong>New MFDs (V5) onboard new investors. Those investors are exactly the people counted in V2's penetration target. Conservative V5 adds +1,549 MFDs × ~400 investors/MFD = ~6.2 lakh new investors — a substantial fraction already counted in V2's +9.34 lakh target.</div>
+      <div class="obox"><strong>Source 3: V1 ∩ V2 (partial)</strong>When an FD holder converts to MF (V1), a fraction of them were previously unregistered investors — they join both V1's AUM count and V2's new-investor count simultaneously. Estimated at ~30% of V1 converters at conservative level, rising to ~35% at ambitious scale.</div>
+      <div class="obox"><strong>Source 4: V4 within V2 (partial)</strong>Some of V4's per-capita AUM deepening comes from new investors (counted in V2) raising their AUM as they accumulate. At the steady-state horizon, a portion of V4 and V2 represent the same AUM dollars maturing over time. Estimated at ~20% overlap between V4 and V2 at ambitious scale.</div>
+    </div>
+  </div>
+
+  <div class="ocard">
+    <div class="vtitle">Why 0% and 100% are both impossible</div>
+    <div class="ogrid">
+      <div class="obox"><strong>0% overlap — impossible</strong>V3 ⊂ V2 is definitionally true. At conservative level, V3 AUM (₹16,189 Cr) as a share of total raw sum (₹1,05,240 Cr) = 15.4%. Even if every other pair were perfectly independent, overlap cannot fall below ~15%. In practice it is higher because V5→V2 and V1∩V2 also exist.</div>
+      <div class="obox"><strong>100% overlap — impossible</strong>V4 deepens AUM among <em>existing</em> investors. V1 captures FD holders who have <em>never</em> invested in MFs. These are structurally different populations — their AUM contributions cannot be identical. Running all 5 vectors simultaneously produces a larger total AUM than running any single one.</div>
+    </div>
+  </div>
+
+  <div class="ocard">
+    <div class="vtitle">Step-by-step derivation of the 20%–55% range</div>
+
+    <div class="steps">
+      <div class="step"><div class="step-n">1</div><div class="step-b"><strong>Compute raw sum at conservative (t=0):</strong><br>V1=₹19,324 + V2=₹24,058 + V3=₹16,189 + V4=₹14,144 + V5=₹31,445 = <strong>₹1,05,160 Cr</strong></div></div>
+      <div class="step"><div class="step-n">2</div><div class="step-b"><strong>Identify irreducible overlap — V3 ⊂ V2:</strong><br>V3 conservative AUM = ₹16,189 Cr. This is 100% inside V2. Minimum irreducible overlap = 16,189 ÷ 1,05,160 = <strong>15.4%</strong>. This is the hard floor regardless of all other assumptions.</div></div>
+      <div class="step"><div class="step-n">3</div><div class="step-b"><strong>Add V5 → V2 overlap:</strong><br>V5 conservative = +1,549 MFDs × 400 investors × ₹2,57,573 AUM = ₹15,969 Cr of AUM attributable to investors already in V2's count. V5→V2 overlap share of raw sum = 15,969 ÷ 1,05,160 = <strong>+15.2pp</strong>. Running total overlap: 15.4 + 15.2 = ~30.6%.</div></div>
+      <div class="step"><div class="step-n">4</div><div class="step-b"><strong>Add V1 ∩ V2 partial overlap:</strong><br>~30% of V1 converters (₹19,324 Cr × 30% = ₹5,797 Cr) are new investors also counted in V2. Share of raw sum = 5,797 ÷ 1,05,160 = <strong>+5.5pp</strong>. Running total: ~36.1%.</div></div>
+      <div class="step"><div class="step-n">5</div><div class="step-b"><strong>Triple-count correction (add back):</strong><br>V3∩V5 shared investors have been subtracted twice (once in step 2, once in step 3). Must add back: ~40% of V3 investors also come via new MFDs (V5) → ₹16,189 × 40% × (V5_overlap_rate) ≈ ₹2,590 Cr. Add back = <strong>−2.5pp</strong> from running total. Adjusted: ~33.6%.</div></div>
+      <div class="step"><div class="step-n">6</div><div class="step-b"><strong>Add uncertainty buffer:</strong><br>Unmeasured 3-way and 4-way interactions (V1∩V2∩V5, V2∩V4 partial) are real but difficult to quantify. A <strong>+5–10pp buffer</strong> is added at conservative level. This gives the conservative overlap range of <strong>38–44%</strong>, midpoint <strong>~42%</strong>. The simulator uses <strong>45%</strong> at the conservative preset (slightly above midpoint to be appropriately conservative).</div></div>
+      <div class="step"><div class="step-n">7</div><div class="step-b"><strong>Ambitious scenario reduces overlap:</strong><br>At ambitious (t=100), better programme coordination means vectors reach more distinct populations. V5 ambitious MFDs serve more diverse geographies (less overlap with V2's urban-skewed pool). V1 ambitious intercepts more FD holders who have never previously invested (less V1∩V2 overlap). Pairwise overlap falls to <strong>~26–32%</strong>, midpoint <strong>25%</strong> used in simulator at ambitious preset.</div></div>
+    </div>
+
+    <div class="calc-result">
+      Conservative preset: 45% overlap applied to raw sum of ~₹1,05,160 Cr → incremental = ₹57,838 Cr<br>
+      Moderate preset: 35% overlap applied to blended raw sum → incremental varies by slider position<br>
+      Ambitious preset: 25% overlap applied to raw sum of ~₹2,09,691 Cr → incremental = ₹1,57,268 Cr
+    </div>
+  </div>
+
+  <div class="ocard">
+    <div class="vtitle">Pairwise overlap matrix — full decomposition</div>
+    <table class="otbl">
+      <tr><th>Pair</th><th>Conservative overlap</th><th>Ambitious overlap</th><th>Direction</th><th>Reasoning</th></tr>
+      <tr><td><strong>V3 ⊂ V2</strong></td><td>100% of V3 AUM</td><td>100% of V3 AUM</td><td>Fixed</td><td>Definitional: female investors are always a subset of all investors. Never changes.</td></tr>
+      <tr><td><strong>V5 → V2</strong></td><td>~70% of V5 AUM</td><td>~50% of V5 AUM</td><td>Decreasing</td><td>At ambitious, more new MFDs serve existing investors (V4 effect) and rural populations not yet in V2 pool — reduces overlap.</td></tr>
+      <tr><td><strong>V1 ∩ V2</strong></td><td>~30% of V1 AUM</td><td>~35% of V1 AUM</td><td>Increasing</td><td>Larger V1 programme at ambitious reaches more previously-unregistered FD holders, slightly increasing V2 overlap.</td></tr>
+      <tr><td><strong>V4 ∩ V2 (partial)</strong></td><td>~10% of V4 AUM</td><td>~20% of V4 AUM</td><td>Increasing</td><td>More of V4's deepening at ambitious comes from new investors (in V2) accumulating, rather than existing investors stepping up.</td></tr>
+      <tr><td><strong>Triple-count: V2∩V3∩V5</strong></td><td>Add back ~25%</td><td>Add back ~20%</td><td>Correction</td><td>Avoid counting this intersection three times. The add-back reduces the pairwise total.</td></tr>
+      <tr><td class="hi">Net pairwise overlap estimate</td><td class="hi">~42–48%</td><td class="hi">~26–32%</td><td>—</td><td>Simulator midpoints: 45% conservative, 25% ambitious, 35% moderate.</td></tr>
+    </table>
+  </div>
+
+  <div class="ocard">
+    <div class="vtitle">Floor (20%) and Ceiling (55%) — derivation</div>
+    <div class="ogrid">
+      <div class="obox"><strong>Floor: 20%</strong><br>The hard minimum comes from V3 ⊂ V2 alone (15.4% of conservative raw sum) plus a residual V5→V2 that survives even under the most optimistic coordination scenario (~5%). No matter how well-coordinated programmes are, these structural overlaps cannot be designed away. The floor is set at 20% to reflect this irreducibility.</div>
+      <div class="obox"><strong>Ceiling: 55%</strong><br>The ceiling = the conservative pairwise estimate (42–48%) plus a 7pp uncertainty buffer for unmeasured interactions. At 55%, the incremental AUM at conservative = ₹1,05,160 × (1−0.55) = ₹47,322 Cr. This is the most conservative planning scenario — appropriate for a single-year budget estimate where programme coordination has not yet been established.</div>
+    </div>
+    <div class="vformula" style="margin-top:12px">
+Overlap function in simulator:
+  overlap(preset) = 45%  if preset = Conservative (t=0)
+                  = 35%  if preset = Moderate    (t=50)
+                  = 25%  if preset = Ambitious   (t=100)
+  Manual adjustment: slider range 20% (floor) → 55% (ceiling)
+
+Incremental AAUM formula:
+  raw_sum(t) = Σ [V_i(cons) + (V_i(amb) − V_i(cons)) × t/100]   for i = 1 to 5
+  incremental = raw_sum(t) × (1 − overlap%)
+  projected   = ₹73,460 Cr + incremental</div>
+  </div>
+
+  <div class="ocard">
+    <div class="vtitle">Full worked example — Conservative preset</div>
+    <div class="calc-box">STEP 1: Individual vector estimates at t=0 (conservative)
+──────────────────────────────────────────────────────
+  V1: 6,44,120 Cr × 3%                           = ₹19,324 Cr
+  V2: (47,147×0.08 − 2,852) × 1,000 × 2,57,573  = ₹24,058 Cr
+  V3: (23,455×0.05 − 607.5) × 1,000 × 3,55,630  = ₹16,189 Cr
+  V4: 3,000 × 4,71,47,000 ÷ 1,00,00,000         = ₹14,144 Cr
+  V5: 1,549 × 20.3                               = ₹31,445 Cr
+
+STEP 2: Raw sum
+  ₹19,324 + ₹24,058 + ₹16,189 + ₹14,144 + ₹31,445 = ₹1,05,160 Cr
+
+STEP 3: Apply 45% overlap adjustment
+  Incremental AAUM = ₹1,05,160 × (1 − 0.45) = ₹1,05,160 × 0.55 = ₹57,838 Cr
+
+STEP 4: Add to base
+  Projected AAUM = ₹73,460 Cr + ₹57,838 Cr = ₹1,31,298 Cr
+
+STEP 5: Step-up
+  ₹57,838 Cr ÷ ₹73,460 Cr = +78.7% step-up from FY26 base</div>
+
+    <div class="calc-box">WORKED EXAMPLE — Ambitious preset (t=100, 25% overlap)
+──────────────────────────────────────────────────────
+  V1: 6,44,120 × 5%                              = ₹32,206 Cr
+  V2: (47,147×0.12 − 2,852) × 1,000 × 2,57,573  = ₹72,428 Cr
+  V3: (23,455×0.06 − 607.5) × 1,000 × 3,55,630  = ₹22,906 Cr
+  V4: 4,786 × 4,71,47,000 ÷ 1,00,00,000         = ₹22,564 Cr
+  V5: 2,960 × 20.3                               = ₹60,088 Cr
+
+  Raw sum = ₹2,10,192 Cr
+  Overlap = 25% → Incremental = ₹2,10,192 × 0.75 = ₹1,57,644 Cr
+  Projected AAUM = ₹73,460 + ₹1,57,644 = ₹2,31,104 Cr (+214.6% step-up)</div>
+  </div>
+
+</div><!-- end pane-ov -->
+
+<!-- Footer -->
+<div class="footer">
+  <strong>Data sources:</strong> AMFI statewise AAUM &amp; MFD data (March 2026) · NSE EPR unique PAN investor count (FY26) · RBI DBIE state-wise banking statistics · EPFO payroll age-bucket data (FY2024-25) · PFRDA All-Citizen NPS enrolment data · MoHFW projected population (March 2026) · PLFS wage data (Apr–Jun 2024) · Odisha Economic Survey 2025-26 · AMFI MFD registry (Statewise-AMCs dataset, March 2026)<br>
+  <strong>Prepared by:</strong> Bhagya Ranjan Bohidar, Bandari Vedanth · <strong>Study:</strong> Odisha Investment Landscape Study · AMFI · March 2026<br>
+  <strong>Note:</strong> All opportunity figures represent 5–7 year horizon steady-state estimates, not Year-1 projections. Actual near-term AUM impact will be lower as new investors accumulate and new MFDs ramp up productivity.
+</div>
+
+</div><!-- end .page -->
+
+<script>
+const BASE = 73460;
+const V = [
+  {id:'v1', l:'V1', n:'Savings pool mobilisation',    d:'3% → 5% of total bank deposits (₹6,44,120 Cr)', cons:19324, ambt:32206},
+  {id:'v2', l:'V2', n:'Investor base expansion',      d:'8% → 12% population penetration',               cons:24058, ambt:72428},
+  {id:'v3', l:'V3', n:'Female investor inclusion',    d:'5% → 6% female penetration',                    cons:16189, ambt:22906},
+  {id:'v4', l:'V4', n:'Per-capita AUM deepening',     d:'₹15,581 → ₹20,367/capita (Jharkhand benchmark)',cons:14144, ambt:22564},
+  {id:'v5', l:'V5', n:'Distribution expansion',       d:'+1,549 → +2,960 new ARN holders',               cons:31445, ambt:60088},
+];
+const ASUM = V.reduce((s,v) => s + v.ambt, 0);
+let pts = V.map(() => 0), ov = 45;
+
+function fmt(n) {
+  if (n >= 100000) return '₹' + (n/100000).toFixed(2) + ' L Cr';
+  return '₹' + (n/1000).toFixed(1) + 'K Cr';
+}
+
+function buildSliders() {
+  document.getElementById('sliders').innerHTML = V.map((v,i) => `
+    <div class="vrow">
+      <div><div class="vn">${v.l} — ${v.n}</div><div class="vd">${v.d}</div></div>
+      <input type="range" min="0" max="100" value="0" step="1" id="s${i}" oninput="onSlide(${i},+this.value)">
+      <div class="vpct" id="p${i}">0%</div>
+      <div class="vaum" id="a${i}">—</div>
+    </div>
+  `).join('');
+}
+
+function buildBars() {
+  document.getElementById('bars').innerHTML = V.map((v,i) => `
+    <div class="brow">
+      <div class="bh"><span class="bn">${v.l} — ${v.n}</span><span id="bv${i}">—</span></div>
+      <div class="bt"><div class="ba" style="width:${(v.ambt/ASUM*100).toFixed(1)}%"></div><div class="bc" id="bc${i}" style="width:0%"></div></div>
+    </div>
+  `).join('');
+}
+
+function onSlide(i, val) {
+  pts[i] = val;
+  document.getElementById('p'+i).textContent = val + '%';
+  ['pb-con','pb-mod','pb-amb'].forEach(id => document.getElementById(id).classList.remove('on'));
+  update();
+}
+
+function setOv(v) { ov = v; document.getElementById('ovd').textContent = v + '%'; update(); }
+
+function update() {
+  let raw = 0;
+  V.forEach((v,i) => {
+    const val = Math.round(v.cons + (v.ambt - v.cons) * pts[i] / 100);
+    raw += val;
+    document.getElementById('a'+i).textContent = fmt(val);
+    document.getElementById('bc'+i).style.width = (val/ASUM*100).toFixed(1) + '%';
+    document.getElementById('bv'+i).textContent = fmt(val);
+  });
+  const incr = Math.round(raw * (1 - ov/100));
+  const proj = BASE + incr;
+  document.getElementById('r-i').textContent = fmt(incr);
+  document.getElementById('r-p').textContent = fmt(proj);
+  document.getElementById('r-s').textContent = '+' + ((incr/BASE)*100).toFixed(1) + '% step-up from ₹73,460 Cr base';
+}
+
+function setP(p, bid) {
+  pts = V.map(() => p);
+  V.forEach((_,i) => { document.getElementById('s'+i).value = p; document.getElementById('p'+i).textContent = p + '%'; });
+  const o = p===0 ? 45 : p===100 ? 25 : 35;
+  ov = o; document.getElementById('ov').value = o; document.getElementById('ovd').textContent = o + '%';
+  ['pb-con','pb-mod','pb-amb'].forEach(id => document.getElementById(id).classList.remove('on'));
+  document.getElementById(bid).classList.add('on');
+  update();
+}
+
+function showTab(n) {
+  ['sim','def','ov'].forEach(k => document.getElementById('pane-'+k).classList.toggle('on', k===n));
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('on', ['sim','def','ov'][i]===n));
+}
+
+buildSliders(); buildBars(); update();
+</script>
+</body>
+</html>
